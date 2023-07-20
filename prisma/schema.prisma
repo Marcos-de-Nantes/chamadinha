@@ -1,0 +1,159 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+enum TIPO_SEXO {
+    MASCULINO
+    FEMININO
+    OUTRO
+}
+
+model Usuario {
+    id              Int      @id @default(autoincrement())
+    uuid            String   @unique @default(uuid())
+    nome            String   @unique
+    cpf             String   @unique
+    email           String   @unique
+    numero_telefone String   @unique
+    senha           String
+    data_inclusao   DateTime @default(dbgenerated("current_timestamp")) @db.Timestamp()
+    data_alteracao  DateTime @updatedAt
+
+    @@map("usuarios")
+}
+
+model Estado {
+    id   Int    @id
+    nome String @unique
+    uf   String @unique
+
+    Cidades Cidade[]
+
+    @@map("estados")
+}
+
+model Cidade {
+    id        Int    @id @default(autoincrement())
+    id_estado Int
+    nome      String @unique
+
+    Responsavel Responsavel[]
+
+    Estado Estado @relation(fields: [id_estado], references: [id])
+
+    @@map("cidades")
+}
+
+model Aluno {
+    id              Int       @id @default(autoincrement())
+    uuid            String    @unique @default(uuid())
+    nome            String    @unique
+    sexo            TIPO_SEXO
+    cgm             String    @unique @db.VarChar(20)
+    numero_telefone String?
+    data_nascimento DateTime  @db.Date()
+    data_matricula  DateTime  @db.Date()
+    data_inclusao   DateTime  @default(dbgenerated("current_timestamp")) @db.Timestamp()
+    data_alteracao  DateTime  @updatedAt
+
+    ResponsavelAluno     ResponsavelAluno[]
+    HistoricoAlunoClasse HistoricoAlunoClasse[]
+
+    @@map("alunos")
+}
+
+model Responsavel {
+    id              Int      @id @default(autoincrement())
+    uuid            String   @unique @default(uuid())
+    id_cidade       Int
+    nome            String
+    cpf             String
+    rua             String?
+    bairro          String?
+    numero_rua      String?  @db.TinyText
+    cep             String?  @db.TinyText
+    referencia      String?
+    numero_telefone String
+    data_inclusao   DateTime @default(dbgenerated("current_timestamp")) @db.Timestamp()
+    data_alteracao  DateTime @updatedAt
+
+    ResponsavelAluno ResponsavelAluno[]
+
+    Cidade Cidade @relation(fields: [id_cidade], references: [id])
+
+    @@map("responsaveis")
+}
+
+model ResponsavelAluno {
+    id             Int    @id @default(autoincrement())
+    uuid           String @unique @default(uuid())
+    id_aluno       Int
+    id_responsavel Int
+
+    Aluno       Aluno       @relation(fields: [id_aluno], references: [id])
+    Responsavel Responsavel @relation(fields: [id_responsavel], references: [id])
+
+    @@map("responsaveis_alunos")
+}
+
+model HistoricoAlunoClasse {
+    id                    Int      @id @default(autoincrement())
+    uuid                  String   @unique @default(uuid())
+    id_classe             Int
+    id_aluno              Int
+    id_situacao_matricula Int
+    numero_chamada        Int
+    ano_letivo            Int
+    status                String
+    data_inclusao         DateTime @default(dbgenerated("current_timestamp")) @db.Timestamp()
+    data_alteracao        DateTime @updatedAt
+
+    Classe            Classe            @relation(fields: [id_classe], references: [id])
+    Aluno             Aluno             @relation(fields: [id_aluno], references: [id])
+    SituacaoMatricula SituacaoMatricula @relation(fields: [id_situacao_matricula], references: [id])
+
+    @@map("historico_aluno_classes")
+}
+
+model Classe {
+    id         Int     @id @default(autoincrement())
+    uuid       String  @unique @default(uuid())
+    id_turno   Int
+    descricao  String
+    observacao String?
+
+    HistoricoAlunoClasse HistoricoAlunoClasse[]
+
+    Turno Turno @relation(fields: [id_turno], references: [id])
+
+    @@map("classes")
+}
+
+model SituacaoMatricula {
+    id             Int      @id @default(autoincrement())
+    uuid           String   @unique @default(uuid())
+    descricao      String
+    data_inclusao  DateTime @default(dbgenerated("current_timestamp")) @db.Timestamp()
+    data_alteracao DateTime @updatedAt
+
+    HistoricoAlunoClasse HistoricoAlunoClasse[]
+
+    @@map("situacao_matricula")
+}
+
+model Turno {
+    id             Int      @id @default(autoincrement())
+    uuid           String   @unique @default(uuid())
+    descricao      String
+    data_inclusao  DateTime @default(dbgenerated("current_timestamp")) @db.Timestamp()
+    data_alteracao DateTime @updatedAt
+
+    Classe Classe[]
+
+    @@map("turnos")
+}

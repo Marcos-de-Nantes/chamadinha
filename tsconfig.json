@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2022",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+        "@application/*": ["src/application/*"],
+        "@alunos/*": ["src/alunos/*"],
+        "@cidades/*": ["src/cidades/*"],
+        "@classes/*": ["src/classes/*"],
+        "@estados/*": ["src/estados/*"],
+        "@historicoAlunoClasses/*": ["src/historico-aluno-classes/*"],
+        "@responsaveis/*": ["src/responsaveis/*"],
+        "@turnos/*": ["src/turnos/*"],
+        "@responsaveisAlunos/*": ["src/responsaveis-alunos/*"],
+        "@situacaoMatricula/*": ["src/situacao-matricula/*"],
+        "@usuarios/*": ["src/usuarios/*"]
+    }
+  }
+}
